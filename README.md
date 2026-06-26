@@ -39,13 +39,15 @@ A professional-grade REST API test automation framework built with **REST Assure
 
 ## Overview
 
-This framework was built as a portfolio project to demonstrate a production-quality approach to REST API test automation. It covers multiple test methods across several test classes, exercising **distinct authentication strategies** — OAuth 2.0 Bearer Token, Cookie Session Token, and JWT Bearer with token refresh.
+This framework was built as a portfolio project to demonstrate a production-quality approach to REST API test automation.
 
-Test data is fully externalized through **data-driven iterations** backed by JSON files, with no hardcoded values inside test methods. Response contracts are enforced using **JSON Schema** files that validate structure, field types, enum values, and array constraints independently of assertion-level checks.
-
-The framework integrates a **WireMock embedded mock server** running two complementary stub approaches — file-based JSON mapping files for declarative stub definitions, and programmatic stubs with request matching on body content and headers for fine-grained control. **Allure reporting** captures the full test lifecycle through an `@Epic` / `@Feature` / `@Story` / `@Step` annotation hierarchy with AspectJ load-time weaving for step-level granularity on private methods.
-
-All credentials are read from `config.properties` with transparent **environment variable override**, making the project safe to commit and ready to run in any CI/CD pipeline without code changes.
+- **Multi-API coverage** — tests run against three real-world APIs (GitHub, Restful-Booker, Platzi Fake Store) plus an embedded WireMock mock server, covering GET, POST, PUT, and DELETE across all targets
+- **Authentication strategies** — OAuth 2.0 Bearer Token (GitHub PAT), Cookie Session Token (Booker), and JWT Bearer with token refresh (Platzi); each strategy includes negative tests confirming unauthorized access is rejected
+- **Data-driven testing** — all test data is externalized to JSON files under `testdata/`; no hardcoded values inside test methods; TestNG `@DataProvider` injects rows at runtime
+- **JSON Schema validation** — six Draft-07 schema files validate response structure, field types, enum constraints, and array rules independently of assertion-level checks
+- **WireMock embedded mock server** — demonstrates two stub approaches: file-based JSON mapping files loaded at startup, and programmatic stubs registered with fine-grained body and header matching; call verification confirms stubs were actually reached
+- **Allure reporting** — full `@Epic` / `@Feature` / `@Story` / `@Step` hierarchy with AspectJ load-time weaving; response body and diagnostic note attachments on failing tests
+- **CI/CD ready** — credentials loaded from `config.properties` with transparent environment variable override (`GITHUB_TOKEN`, `BOOKER_USERNAME`, etc.); no code changes needed to run in any pipeline
 
 ---
 
