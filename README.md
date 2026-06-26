@@ -29,10 +29,11 @@ A professional-grade REST API test automation framework built with **REST Assure
     - [Allure Reporting](#allure-reporting)
     - [Multi-Authentication Coverage](#multi-authentication-coverage)
     - [CI/CD Configuration Override](#cicd-configuration-override)
-11. [Setup & Installation](#setup--installation)
-12. [Running Tests](#running-tests)
-13. [Generating Allure Reports](#generating-allure-reports)
-14. [Test Suite Breakdown](#test-suite-breakdown)
+11. [Security](#security)
+12. [Setup & Installation](#setup--installation)
+13. [Running Tests](#running-tests)
+14. [Generating Allure Reports](#generating-allure-reports)
+15. [Failure Demonstration Tests](#failure-demonstration-tests)
 
 ---
 
@@ -109,82 +110,97 @@ All credentials are read from `config.properties` with transparent **environment
 
 ## End-to-End Workflow
 
-```
-  ┌──────────────────────────────────────────────────────────────────┐
-  │                      TEST EXECUTION FLOW                         │
-  └──────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A(["`**mvn test**
+    -DsuiteXmlFile=testng.xml`"]) --> B
 
-  mvn test -DsuiteXmlFile=testng.xml
-       │
-       ▼
-  ┌─────────────────┐
-  │  Maven Surefire │  Reads suiteXmlFile, configures AspectJ javaagent
-  │  Plugin 3.3.1   │  for Allure @Step weaving
-  └────────┬────────┘
-           │
-           ▼
-  ┌─────────────────┐
-  │  TestNG 7.9.0   │  Loads testng.xml → resolves groups → orders
-  │  Suite Runner   │  tests by @Priority → builds dependency graph
-  └────────┬────────┘
-           │
-           ▼
-  ┌─────────────────────────────────────────────────────────────┐
-  │  @BeforeClass                                               │
-  │  • ConfigManager loads config.properties (env vars override)│
-  │  • Credentials extracted (token / username+password / JWT)  │
-  │  • WireMock server started on dynamic port (mock tests)     │
-  │  • File-based stubs auto-loaded from wiremock/mappings/     │
-  └───────────────────────────────┬─────────────────────────────┘
-                                  │
-                                  ▼
-  ┌─────────────────────────────────────────────────────────────┐
-  │  DataProvider (if data-driven test)                         │
-  │  • Loads JSON file from testdata/ via ObjectMapper          │
-  │  • Returns Object[][] rows → injected as method parameters  │
-  └───────────────────────────────┬─────────────────────────────┘
-                                  │
-                                  ▼
-  ┌─────────────────────────────────────────────────────────────┐
-  │  Spec Builder                                               │
-  │  • BookerSpecs / GitHubSpecs / PlatziSpecs                  │
-  │  • Builds RequestSpecification: baseURI + auth headers      │
-  │  • Builds ResponseSpecification: status code + time limit   │
-  └───────────────────────────────┬─────────────────────────────┘
-                                  │
-                                  ▼
-  ┌─────────────────────────────────────────────────────────────┐
-  │  POJO Serialization                                         │
-  │  • Lombok @Builder constructs request object                │
-  │  • Jackson serializes POJO → JSON request body             │
-  │  • @JsonProperty maps camelCase fields to snake_case JSON   │
-  └───────────────────────────────┬─────────────────────────────┘
-                                  │
-                                  ▼
-  ┌─────────────────────────────────────────────────────────────┐
-  │  REST Assured HTTP Call                                     │
-  │  given(requestSpec).when().get/post/put/delete(endpoint)    │
-  │       │                                                     │
-  │       ├── Real API (GitHub / Booker / Platzi)               │
-  │       └── WireMock server (localhost:dynamic port)         │
-  └───────────────────────────────┬─────────────────────────────┘
-                                  │
-                                  ▼
-  ┌─────────────────────────────────────────────────────────────┐
-  │  Response Validation                                        │
-  │  • ResponseSpec: status code + response time                │
-  │  • JSON Schema: matchesJsonSchemaInClasspath(schemaPath)    │
-  │  • POJO Deserialization: response.as(MyPojo.class)          │
-  │  • Field Assertions: TestNG assertEquals / assertNotNull    │
-  │  • WireMock Verify: server.verify(N, requestedFor(...))     │
-  └───────────────────────────────┬─────────────────────────────┘
-                                  │
-                                  ▼
-  ┌─────────────────────────────────────────────────────────────┐
-  │  Allure Capture (AspectJ weaves @Step methods at runtime)   │
-  │  @Epic → @Feature → @Story → @Step → pass/fail result       │
-  │  allure-results/ written → mvn allure:serve to view report  │
-  └─────────────────────────────────────────────────────────────┘
+    B["**Maven Surefire Plugin**
+    Reads suiteXmlFile
+    Injects AspectJ javaagent into JVM
+    for Allure @Step weaving"]
+
+    B --> C["**TestNG Suite Runner**
+    Loads testng.xml
+    Resolves group filters
+    Orders tests by @Priority
+    Builds dependsOnMethods graph"]
+
+    C --> D["**@BeforeClass Setup**
+    ConfigManager loads config.properties
+    Env-var overrides applied
+    Credentials extracted
+    WireMock server started on dynamic port
+    File-based stubs loaded from mappings/"]
+
+    D --> E{Data-driven?}
+
+    E -->|Yes| F["**DataProvider**
+    Jackson reads JSON from testdata/
+    Returns Object[][] rows
+    Injected as test method params"]
+
+    E -->|No| G
+
+    F --> G["**Spec Builder**
+    BookerSpecs / GitHubSpecs / PlatziSpecs
+    RequestSpecification: baseURI + auth headers
+    ResponseSpecification: status + time limit"]
+
+    G --> H["**POJO Serialization**
+    Lombok @Builder constructs request object
+    Jackson serializes POJO → JSON body
+    @JsonProperty handles snake_case mapping"]
+
+    H --> I["**REST Assured HTTP Call**
+    given(spec).when().METHOD(endpoint)"]
+
+    I --> J{Target}
+
+    J -->|Real API| K["**External API**
+    GitHub api.github.com
+    Booker restful-booker.herokuapp.com
+    Platzi api.escuelajs.co"]
+
+    J -->|Mock| L["**WireMock Server**
+    localhost:dynamic port
+    File-based or programmatic stub matched"]
+
+    K --> M
+    L --> M
+
+    M["**Response Validation**
+    Status code + response time ← ResponseSpec
+    JSON Schema ← matchesJsonSchemaInClasspath
+    POJO deserialization ← response.as(Class)
+    Field assertions ← assertEquals / assertNotNull
+    WireMock verify ← server.verify(N, requestedFor)"]
+
+    M --> N{Result}
+
+    N -->|Pass| O["**Allure Capture**
+    AspectJ-woven @Step timeline
+    @Epic → @Feature → @Story → @Step
+    allure-results/ written to disk"]
+
+    N -->|Fail| P["**Allure Failure Capture**
+    Test marked FAILED
+    Response body attached
+    Failure Note attached
+    Stack trace captured"]
+
+    O --> Q
+    P --> Q
+
+    Q(["**mvn allure:serve**
+    HTML report opens in browser"])
+
+    style A fill:#2d6a4f,color:#fff
+    style Q fill:#2d6a4f,color:#fff
+    style K fill:#1565c0,color:#fff
+    style L fill:#6a1b9a,color:#fff
+    style P fill:#b71c1c,color:#fff
+    style O fill:#1b5e20,color:#fff
 ```
 
 ---
@@ -789,10 +805,10 @@ mvn clean test -DsuiteXmlFile=testng.xml
 # Smoke suite — 6 critical-path sanity checks (fastest)
 mvn test -DsuiteXmlFile=testng-smoke.xml
 
-# Regression suite — 17 tests (all except full-only mock tests)
+# Regression suite — 19 tests
 mvn test -DsuiteXmlFile=testng-regression.xml
 
-# Full suite — all 19 tests
+# Full suite — all 21 tests
 mvn test -DsuiteXmlFile=testng.xml
 
 # Clean build + full suite
@@ -814,35 +830,6 @@ mvn allure:serve
 mvn allure:report
 # Report location: target/site/allure-maven-plugin/index.html
 ```
-
----
-
-## Test Suite Breakdown
-
-| Suite | File | Group Tag | Tests Run | Execution Time |
-|-------|------|-----------|-----------|----------------|
-| Smoke | `testng-smoke.xml` | `smoke` | 6 tests | ~15–20 seconds |
-| Regression | `testng-regression.xml` | `regression` | 19 tests | ~45–60 seconds |
-| Full | `testng.xml` | `full` | 21 tests | ~50–70 seconds |
-
-### Smoke Suite Contents (6 tests)
-| TC ID | Description |
-|-------|-------------|
-| TC_GH_001 | GitHub — authenticate & fetch profile |
-| TC_RB_001 | Booker — generate session token |
-| TC_RB_002 | Booker — create booking (schema validated) |
-| TC_PF_001 | Platzi — login & obtain JWT |
-| TC_WM_001 | WireMock — GET all bookings via file-based stub |
-| TC_SD_001 | StubDemo — GET items via programmatic stub |
-
-### Tests in Regression but NOT Smoke (13 additional)
-All GitHub, Booker, and Platzi tests except TC_GH_001/TC_RB_001/TC_RB_002/TC_PF_001, including TC_RB_007 and TC_PF_006; plus WireMock TC_WM_002 and StubDemo TC_SD_002–004.
-
-### Tests in Full but NOT Regression (2 additional)
-| TC ID | Description |
-|-------|-------------|
-| TC_WM_003 | WireMock — PUT with Authorization header matching |
-| TC_WM_004 | WireMock — DELETE via file-based stub |
 
 ---
 
