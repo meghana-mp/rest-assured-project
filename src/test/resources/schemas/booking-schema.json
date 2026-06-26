@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Booking Creation Response",
+  "description": "Schema for POST /booking response — TC_RB_002",
+  "type": "object",
+  "required": ["bookingid", "booking"],
+  "additionalProperties": false,
+  "properties": {
+    "bookingid": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Auto-generated unique booking ID"
+    },
+    "booking": {
+      "type": "object",
+      "required": ["firstname", "lastname", "totalprice", "depositpaid", "bookingdates"],
+      "additionalProperties": false,
+      "properties": {
+        "firstname": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lastname": {
+          "type": "string",
+          "minLength": 1
+        },
+        "totalprice": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "depositpaid": {
+          "type": "boolean"
+        },
+        "bookingdates": {
+          "type": "object",
+          "required": ["checkin", "checkout"],
+          "additionalProperties": false,
+          "properties": {
+            "checkin": {
+              "type": "string",
+              "description": "Check-in date (yyyy-MM-dd)"
+            },
+            "checkout": {
+              "type": "string",
+              "description": "Check-out date (yyyy-MM-dd)"
+            }
+          }
+        },
+        "additionalneeds": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "token"   : null,
+    "scenario": "No Authorization header at all"
+  },
+  {
+    "token"   : "random_invalid_token_string_abc123",
+    "scenario": "Plain text — not a JWT, no valid structure"
+  },
+  {
+    "token"   : "eyJhbGciOiJIUzI1NiJ9.fake_payload.bad_sig",
+    "scenario": "Malformed JWT — three segments but all base64-invalid"
+  }
+]

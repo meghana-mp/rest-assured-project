@@ -1,0 +1,7 @@
+{
+  "id": 1,
+  "firstname": "John",
+  "lastname": "Doe",
+  "totalprice": 150,
+  "depositpaid": true
+}

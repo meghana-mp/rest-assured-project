@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Product Creation Response",
+  "description": "Schema for POST /products response — TC_PF_004. Validates pricing data and images array.",
+  "type": "object",
+  "required": ["id", "title", "price", "images"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "price": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Price must be a non-negative number (validates pricing data constraint)"
+    },
+    "description": {
+      "type": "string"
+    },
+    "images": {
+      "type": "array",
+      "description": "At least one image URL must be present (validates images array constraint)",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "category": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "image": { "type": "string" }
+      }
+    }
+  }
+}

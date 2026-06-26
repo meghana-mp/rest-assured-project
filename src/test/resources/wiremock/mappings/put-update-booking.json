@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "PUT",
+    "urlPattern": "/mock/bookings/[0-9]+"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "booking-updated.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

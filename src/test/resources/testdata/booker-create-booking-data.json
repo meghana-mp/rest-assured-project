@@ -1,0 +1,7 @@
+{
+  "firstname"      : "James",
+  "lastname"       : "Sullivan",
+  "totalprice"     : 250,
+  "depositpaid"    : true,
+  "additionalneeds": "Late checkout"
+}

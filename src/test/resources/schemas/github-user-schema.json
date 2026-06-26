@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GitHub User",
+  "description": "Schema for GET /user response — TC_GH_001",
+  "type": "object",
+  "required": ["login", "id", "avatar_url", "type"],
+  "additionalProperties": true,
+  "properties": {
+    "login": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Authenticated user's GitHub login name"
+    },
+    "id": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "GitHub-assigned numeric user ID"
+    },
+    "avatar_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to the user's avatar image"
+    },
+    "html_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to the user's public GitHub profile"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["User", "Organization", "Bot"],
+      "description": "Account type — must be User for an authenticated personal token"
+    },
+    "site_admin": {
+      "type": "boolean"
+    },
+    "name": {
+      "type": ["string", "null"]
+    },
+    "email": {
+      "type": ["string", "null"]
+    },
+    "bio": {
+      "type": ["string", "null"]
+    },
+    "public_repos": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of public repositories owned by this user"
+    },
+    "followers": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "following": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

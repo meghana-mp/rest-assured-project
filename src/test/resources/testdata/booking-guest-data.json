@@ -1,0 +1,23 @@
+[
+  {
+    "firstname"      : "Alice",
+    "lastname"       : "Johnson",
+    "totalprice"     : 150,
+    "depositpaid"    : true,
+    "additionalneeds": "Breakfast included"
+  },
+  {
+    "firstname"      : "Bob",
+    "lastname"       : "Smith",
+    "totalprice"     : 320,
+    "depositpaid"    : false,
+    "additionalneeds": "High floor room"
+  },
+  {
+    "firstname"      : "Charlie",
+    "lastname"       : "Brown",
+    "totalprice"     : 500,
+    "depositpaid"    : true,
+    "additionalneeds": "Airport transfer, Late checkout"
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GitHub Repositories List",
+  "description": "Schema for GET /user/repos array response — TC_GH_003",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "name", "full_name", "private"],
+    "additionalProperties": true,
+    "properties": {
+      "id": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1
+      },
+      "full_name": {
+        "type": "string",
+        "pattern": ".+/.+"
+      },
+      "private": {
+        "type": "boolean"
+      },
+      "html_url": {
+        "type": "string",
+        "format": "uri"
+      }
+    }
+  }
+}

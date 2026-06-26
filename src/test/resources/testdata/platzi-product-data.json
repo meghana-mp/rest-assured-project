@@ -1,0 +1,6 @@
+{
+  "price"      : 149,
+  "categoryId" : 1,
+  "imageUrl"   : "https://picsum.photos/200/300",
+  "description": "Automated test product created by the REST Assured framework"
+}

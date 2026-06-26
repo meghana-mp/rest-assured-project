@@ -1,0 +1,14 @@
+[
+  {
+    "token"   : "invalid_plaintext_token_xyz",
+    "scenario": "Plain invalid string — not a PAT or JWT"
+  },
+  {
+    "token"   : "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "scenario": "Fake GitHub PAT format — correct prefix, wrong value"
+  },
+  {
+    "token"   : "eyJhbGciOiJIUzI1NiJ9.invalid_payload.bad_signature",
+    "scenario": "Malformed JWT-style token — three segments but all invalid"
+  }
+]

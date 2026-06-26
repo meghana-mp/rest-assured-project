@@ -1,0 +1,52 @@
+# REST Assured API Test Automation Framework — Requirements
+# ============================================================
+# This is a Java/Maven project. Library dependencies are declared in pom.xml.
+# This file lists the system-level tools and environment variables required
+# to build and run the project locally or in CI.
+
+# ── Build Tools ────────────────────────────────────────────────────────────────
+Java        >= 21          # LTS release; required for compiler release flag in pom.xml
+Maven       >= 3.9.0       # Apache Maven for dependency management and test execution
+
+# ── IDE (optional) ─────────────────────────────────────────────────────────────
+IntelliJ IDEA  (recommended)  # Community or Ultimate; install Lombok plugin
+VS Code        (alternative)  # With Extension Pack for Java + Lombok Annotations Support
+
+# ── Environment Variables (CI / secrets) ───────────────────────────────────────
+# Set these instead of editing config.properties when running in CI/CD pipelines.
+# ConfigManager maps property keys → env vars by uppercasing and replacing dots with underscores.
+#
+#   GITHUB_TOKEN      GitHub personal access token with scopes: repo, delete_repo
+#   BOOKER_USERNAME   Restful-Booker admin username  (default: admin)
+#   BOOKER_PASSWORD   Restful-Booker admin password  (default: password123)
+#   PLATZI_EMAIL      Platzi Fake Store login email  (default: john@mail.com)
+#   PLATZI_PASSWORD   Platzi Fake Store password     (default: changeme)
+
+# ── Java Library Dependencies (managed by pom.xml) ─────────────────────────────
+# rest-assured                5.3.2    HTTP client and BDD-style assertion DSL
+# json-schema-validator       5.3.2    JSON Schema Draft-07 response validation
+# jackson-databind            2.15.3   POJO serialization / deserialization
+# testng                      7.9.0    Test runner with ordering and group support
+# lombok                      1.18.38  Boilerplate reduction (@Data, @Builder, etc.)
+# logback-classic             1.5.6    Structured logging (SLF4J implementation)
+# slf4j-api                   2.0.13   Logging facade
+# hamcrest                    2.2      Matcher library for response assertions
+# wiremock                    3.5.4    Embedded HTTP mock server for offline testing
+# allure-testng               2.27.0   Allure TestNG adapter — captures results to target/allure-results/
+# aspectjweaver               1.9.22.1 AspectJ runtime agent — enables @Step weaving for Allure timeline
+
+# ── Running the Tests ──────────────────────────────────────────────────────────
+# Full suite (19 tests):
+#   mvn test
+#
+# Smoke suite (5 critical-path tests, ~30 s):
+#   mvn test -DsuiteXmlFile=testng-smoke.xml
+#
+# Regression suite (17 tests):
+#   mvn test -DsuiteXmlFile=testng-regression.xml
+#
+# Single test class:
+#   mvn test -Dtest=GitHubTests
+#
+# With a CI token override:
+#   GITHUB_TOKEN=ghp_xxx mvn test

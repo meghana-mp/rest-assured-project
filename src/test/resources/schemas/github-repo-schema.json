@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GitHub Repository",
+  "description": "Schema for a single GitHub repository object — used in TC_GH_003 (array items) and TC_GH_004 (create response)",
+  "type": "object",
+  "required": ["id", "name", "full_name", "private", "html_url"],
+  "additionalProperties": true,
+  "properties": {
+    "id": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "GitHub-assigned numeric repository ID"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Short repository name without the owner prefix"
+    },
+    "full_name": {
+      "type": "string",
+      "pattern": ".+/.+",
+      "description": "owner/repo format — e.g. octocat/hello-world"
+    },
+    "private": {
+      "type": "boolean",
+      "description": "true = private, false = public"
+    },
+    "html_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Browser URL to the repository on github.com"
+    },
+    "description": {
+      "type": ["string", "null"]
+    },
+    "clone_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "ssh_url": {
+      "type": "string"
+    },
+    "default_branch": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+# ── Maven build output ─────────────────────────────────────────────────────────
+target/
+*.class
+
+# ── IDE files ──────────────────────────────────────────────────────────────────
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# ── Allure reports ─────────────────────────────────────────────────────────────
+# allure-results/ is generated under target/ (covered above), but exclude standalone dirs too
+allure-results/
+allure-report/
+
+# ── Logs ───────────────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── macOS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── Windows ────────────────────────────────────────────────────────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ── Internal documentation ─────────────────────────────────────────────────────
+FrameworkDoc.md
+StepsFollowed.md
+
+# ── Tool-generated / local tooling ─────────────────────────────────────────────
+.allure/
+.claude/
+
+# ── Secrets / environment overrides ────────────────────────────────────────────
+# config.properties holds real credentials locally — never commit it.
+# Use config.properties.example (committed) as the template.
+src/test/resources/config.properties
+.env
+*.env.local
+secrets.properties

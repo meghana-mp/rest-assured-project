@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/mock/bookings"
+  },
+  "response": {
+    "status": 201,
+    "bodyFileName": "booking-created.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

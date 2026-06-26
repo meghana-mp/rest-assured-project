@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.apiframework</groupId>
+    <artifactId>rest-assured-project</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>REST Assured API Test Framework</name>
+    <description>Comprehensive API test automation framework covering GitHub, Restful-Booker, and Platzi Fake Store APIs</description>
+
+    <properties>
+        <maven.compiler.release>21</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <rest-assured.version>5.3.2</rest-assured.version>
+        <jackson.version>2.15.3</jackson.version>
+        <testng.version>7.9.0</testng.version>
+        <!-- 1.18.38 is the first release with full Java 23-26 support -->
+        <lombok.version>1.18.38</lombok.version>
+        <slf4j.version>2.0.13</slf4j.version>
+        <logback.version>1.5.6</logback.version>
+        <hamcrest.version>2.2</hamcrest.version>
+        <surefire.version>3.3.1</surefire.version>
+        <!-- WireMock 3.x (org.wiremock group) requires Java 11+; embedded mode for in-process mocking -->
+        <wiremock.version>3.5.4</wiremock.version>
+        <!--
+            Allure 2.x — test reporting. allure-testng captures test results at runtime via
+            the TestNG listener registered automatically by the adapter. aspectjweaver enables
+            @Step annotation weaving so each private helper method appears as a named step
+            in the Allure report timeline. Both versions must be kept in sync.
+        -->
+        <allure.version>2.27.0</allure.version>
+        <aspectj.version>1.9.22.1</aspectj.version>
+        <!-- Default suite file; override on CLI: mvn test -DsuiteXmlFile=testng-smoke.xml -->
+        <suiteXmlFile>testng.xml</suiteXmlFile>
+    </properties>
+
+    <dependencies>
+
+        <!-- ===================== REST Assured ===================== -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+        </dependency>
+
+        <!-- JSON Schema Validator (bundled with rest-assured) -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${rest-assured.version}</version>
+        </dependency>
+
+        <!-- ===================== Jackson (Serialization) ===================== -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- ===================== TestNG ===================== -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+        </dependency>
+
+        <!-- ===================== Hamcrest ===================== -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>${hamcrest.version}</version>
+        </dependency>
+
+        <!-- ===================== Lombok (reduces POJO boilerplate) ===================== -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--
+            WireMock (embedded) — spins up a real HTTP server inside the JVM during tests.
+            Used in WireMockTests.java to demonstrate mocking and stubbing without hitting
+            live APIs. The `org.wiremock` group is the official home of WireMock 3.x;
+            the Java package names remain `com.github.tomakehurst.wiremock.*` for backwards
+            compatibility. Test-scoped: never ships to production.
+        -->
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${wiremock.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+            Allure TestNG adapter — registers a TestNG listener that captures test results,
+            attachments, and @Step timelines and writes them to target/allure-results/.
+            aspectjweaver is declared in the surefire plugin section, not here, because it
+            must run as a JVM -javaagent rather than as a regular classpath dependency.
+        -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ===================== Logging ===================== -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <!--
+                        suiteXmlFile defaults to testng.xml (set in <properties>).
+                        Override on CLI: mvn test -DsuiteXmlFile=testng-smoke.xml
+                    -->
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <!-- enable-native-access: required by WireMock 3.x on Java 21+.
+                         javaagent aspectjweaver: enables Allure @Step weaving at runtime
+                         so private helper methods appear as named steps in the report. -->
+                    <argLine>
+                        --enable-native-access=ALL-UNNAMED
+                        -Dfile.encoding=UTF-8
+                        -javaagent:${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar
+                    </argLine>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!--
+                Allure Maven plugin — generates the HTML report from target/allure-results/.
+                Run:  mvn allure:report   → builds report in target/site/allure-maven-plugin/
+                      mvn allure:serve    → builds report and opens it in the default browser
+                reportVersion must match the allure.version property above.
+            -->
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.12.0</version>
+                <configuration>
+                    <reportVersion>${allure.version}</reportVersion>
+                    <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

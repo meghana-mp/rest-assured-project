@@ -1,0 +1,16 @@
+{
+  "get": {
+    "response": [
+      { "id": 1, "name": "Widget A", "price": 29.99 },
+      { "id": 2, "name": "Widget B", "price": 49.99 }
+    ]
+  },
+  "post": {
+    "request" : { "name": "Widget C", "price": 99.99 },
+    "response": { "id": 3, "name": "Widget C", "price": 99.99 }
+  },
+  "put": {
+    "request" : { "name": "Widget A Updated", "price": 39.99 },
+    "response": { "id": 1, "name": "Widget A Updated", "price": 39.99 }
+  }
+}

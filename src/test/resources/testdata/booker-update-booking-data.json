@@ -1,0 +1,7 @@
+{
+  "firstname"      : "Jane",
+  "lastname"       : "Sullivan",
+  "totalprice"     : 399,
+  "depositpaid"    : false,
+  "additionalneeds": "Early check-in, Non-smoking room"
+}

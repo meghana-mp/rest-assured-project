@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Strict booking schema requiring 'booking_reference' — used by TC_RB_007 to demonstrate schema validation failure. Booker API never returns this field.",
+  "type": "object",
+  "required": ["firstname", "lastname", "totalprice", "depositpaid", "bookingdates", "booking_reference"],
+  "properties": {
+    "firstname":    { "type": "string",  "minLength": 1 },
+    "lastname":     { "type": "string",  "minLength": 1 },
+    "totalprice":   { "type": "integer", "minimum": 0 },
+    "depositpaid":  { "type": "boolean" },
+    "bookingdates": {
+      "type": "object",
+      "required": ["checkin", "checkout"],
+      "properties": {
+        "checkin":  { "type": "string" },
+        "checkout": { "type": "string" }
+      }
+    },
+    "booking_reference": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique booking reference code — required by this schema but never returned by the Booker API"
+    }
+  }
+}

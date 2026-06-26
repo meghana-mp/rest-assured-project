@@ -1,0 +1,35 @@
+# =====================================================================
+#  REST Assured Framework — API Configuration (TEMPLATE)
+#
+#  Copy this file to config.properties and fill in real values:
+#    cp src/test/resources/config.properties.example \
+#       src/test/resources/config.properties
+#
+#  config.properties is gitignored — never commit real credentials.
+#
+#  CI/CD environment-variable overrides (takes priority over file):
+#    github.token  → GITHUB_TOKEN
+#    booker.*      → BOOKER_USERNAME / BOOKER_PASSWORD
+#    platzi.*      → PLATZI_EMAIL / PLATZI_PASSWORD
+# =====================================================================
+
+# ── GitHub API (OAuth 2.0 Bearer Token) ──────────────────────────────
+github.base.url=https://api.github.com
+# Generate a Personal Access Token at: https://github.com/settings/tokens
+# Required scopes: repo (create repos), delete_repo (delete repos)
+github.token=REPLACE_WITH_YOUR_GITHUB_PERSONAL_ACCESS_TOKEN
+
+# ── Restful-Booker (Basic Auth / Cookie Token) ───────────────────────
+# Public test credentials — work out of the box, no change needed
+booker.base.url=https://restful-booker.herokuapp.com
+booker.username=admin
+booker.password=password123
+
+# ── Platzi Fake Store (JWT) ──────────────────────────────────────────
+# Public test credentials — work out of the box, no change needed
+platzi.base.url=https://api.escuelajs.co/api/v1
+platzi.email=john@mail.com
+platzi.password=changeme
+
+# ── Global Thresholds ────────────────────────────────────────────────
+response.time.threshold.ms=5000
