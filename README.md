@@ -33,7 +33,7 @@ A professional-grade REST API test automation framework built with **REST Assure
 12. [Setup & Installation](#setup--installation)
 13. [Running Tests](#running-tests)
 14. [Generating Allure Reports](#generating-allure-reports)
-15. [Failure Demonstration Tests](#failure-demonstration-tests)
+15. [Allure Report Screenshots](#allure-report-screenshots)
 
 ---
 
@@ -115,21 +115,20 @@ This framework was built as a portfolio project to demonstrate a production-qual
 
 ```mermaid
 flowchart TD
-    A(["`**mvn test**
-    -DsuiteXmlFile=testng.xml`"]) --> B
+    A(["mvn test -DsuiteXmlFile=testng.xml"]) --> B
 
-    B["**Maven Surefire Plugin**
+    B["Maven Surefire Plugin
     Reads suiteXmlFile
     Injects AspectJ javaagent into JVM
     for Allure @Step weaving"]
 
-    B --> C["**TestNG Suite Runner**
+    B --> C["TestNG Suite Runner
     Loads testng.xml
     Resolves group filters
     Orders tests by @Priority
     Builds dependsOnMethods graph"]
 
-    C --> D["**@BeforeClass Setup**
+    C --> D["@BeforeClass Setup
     ConfigManager loads config.properties
     Env-var overrides applied
     Credentials extracted
@@ -138,55 +137,55 @@ flowchart TD
 
     D --> E{Data-driven?}
 
-    E -->|Yes| F["**DataProvider**
+    E -->|Yes| F["DataProvider
     Jackson reads JSON from testdata/
     Returns Object[][] rows
     Injected as test method params"]
 
     E -->|No| G
 
-    F --> G["**Spec Builder**
+    F --> G["Spec Builder
     BookerSpecs / GitHubSpecs / PlatziSpecs
     RequestSpecification: baseURI + auth headers
     ResponseSpecification: status + time limit"]
 
-    G --> H["**POJO Serialization**
+    G --> H["POJO Serialization
     Lombok @Builder constructs request object
     Jackson serializes POJO → JSON body
     @JsonProperty handles snake_case mapping"]
 
-    H --> I["**REST Assured HTTP Call**
+    H --> I["REST Assured HTTP Call
     given(spec).when().METHOD(endpoint)"]
 
     I --> J{Target}
 
-    J -->|Real API| K["**External API**
+    J -->|Real API| K["External API
     GitHub api.github.com
     Booker restful-booker.herokuapp.com
     Platzi api.escuelajs.co"]
 
-    J -->|Mock| L["**WireMock Server**
+    J -->|Mock| L["WireMock Server
     localhost:dynamic port
     File-based or programmatic stub matched"]
 
     K --> M
     L --> M
 
-    M["**Response Validation**
-    Status code + response time ← ResponseSpec
-    JSON Schema ← matchesJsonSchemaInClasspath
-    POJO deserialization ← response.as(Class)
-    Field assertions ← assertEquals / assertNotNull
-    WireMock verify ← server.verify(N, requestedFor)"]
+    M["Response Validation
+    Status code + response time via ResponseSpec
+    JSON Schema via matchesJsonSchemaInClasspath
+    POJO deserialization via response.as(Class)
+    Field assertions via assertEquals / assertNotNull
+    WireMock verify via server.verify(N, requestedFor)"]
 
     M --> N{Result}
 
-    N -->|Pass| O["**Allure Capture**
+    N -->|Pass| O["Allure Capture
     AspectJ-woven @Step timeline
-    @Epic → @Feature → @Story → @Step
+    Epic → Feature → Story → Step
     allure-results/ written to disk"]
 
-    N -->|Fail| P["**Allure Failure Capture**
+    N -->|Fail| P["Allure Failure Capture
     Test marked FAILED
     Response body attached
     Failure Note attached
@@ -195,8 +194,7 @@ flowchart TD
     O --> Q
     P --> Q
 
-    Q(["**mvn allure:serve**
-    HTML report opens in browser"])
+    Q(["mvn allure:serve — HTML report opens in browser"])
 
     style A fill:#2d6a4f,color:#fff
     style Q fill:#2d6a4f,color:#fff
@@ -453,39 +451,6 @@ TC_RB_001 (generate token)
 
 ---
 
-## Complete Test Inventory
-
-| TC ID | Test Name | HTTP | Endpoint | Groups | Data-Driven | Schema |
-|-------|-----------|------|----------|--------|------------|--------|
-| TC_GH_001 | Authenticate & fetch profile | GET | `/user` | smoke, regression, full | — | github-user |
-| TC_GH_002 | Authentication failure | GET | `/user` | regression, full | 3 invalid tokens | — |
-| TC_GH_003 | List repositories | GET | `/user/repos` | regression, full | — | github-repos-array |
-| TC_GH_004 | Create repository | POST | `/user/repos` | regression, full | — | github-repo |
-| TC_GH_005 | Delete repository | DELETE | `/repos/{owner}/{repo}` | regression, full | — | — |
-| TC_RB_001 | Generate auth token | POST | `/auth` | smoke, regression, full | — | — |
-| TC_RB_002 | Create booking + schema | POST | `/booking` | smoke, regression, full | 1 booking | booking |
-| TC_RB_003 | Retrieve booking by ID | GET | `/booking/{id}` | regression, full | — | — |
-| TC_RB_004 | Full update (PUT) | PUT | `/booking/{id}` | regression, full | 1 update set | — |
-| TC_RB_005 | Update without token (403) | PUT | `/booking/{id}` | regression, full | 1 attempt | — |
-| TC_RB_006 | Data-driven booking creation | POST | `/booking` | regression, full | 3 guests | — |
-| TC_RB_007 | Strict schema validation failure | GET | `/booking/{id}` | regression, full | — | booking-strict-negative |
-| TC_PF_001 | User login + obtain JWT | POST | `/auth/login` | smoke, regression, full | — | — |
-| TC_PF_002 | Get profile with JWT | GET | `/auth/profile` | regression, full | — | — |
-| TC_PF_003 | Invalid auth → 401 | GET | `/auth/profile` | regression, full | 3 invalid tokens | — |
-| TC_PF_004 | Create product + schema | POST | `/products` | regression, full | 1 product | product |
-| TC_PF_005 | Refresh JWT token | POST | `/auth/refresh-token` | regression, full | — | — |
-| TC_PF_006 | Negative price business rule | POST | `/products` | regression, full | — | — |
-| TC_WM_001 | GET all bookings (file stub) | GET | `/mock/bookings` | smoke, full | — | — |
-| TC_WM_002 | POST create booking (body match) | POST | `/mock/bookings` | regression, full | — | — |
-| TC_WM_003 | PUT update booking (header match) | PUT | `/mock/bookings/1` | full | — | — |
-| TC_WM_004 | DELETE booking (file stub) | DELETE | `/mock/bookings/1` | full | — | — |
-| TC_SD_001 | GET list items (programmatic stub) | GET | `/api/items` | smoke, regression, full | — | — |
-| TC_SD_002 | POST create item | POST | `/api/items` | regression, full | — | — |
-| TC_SD_003 | PUT update item | PUT | `/api/items/1` | regression, full | — | — |
-| TC_SD_004 | DELETE item | DELETE | `/api/items/1` | regression, full | — | — |
-
----
-
 ## Key Features
 
 ### JSON Schema Validation
@@ -583,17 +548,6 @@ wireMockServer.verify(1,
 ### Data-Driven Architecture
 
 All test data is externalized to JSON files under `src/test/resources/testdata/`. No literal values appear in test method bodies.
-
-| File | Rows | Consumed By |
-|------|------|-------------|
-| `booking-guest-data.json` | 3 | TC_RB_006 (3 independent booking iterations) |
-| `github-invalid-tokens.json` | 3 | TC_GH_002 (3 negative auth scenarios) |
-| `platzi-invalid-tokens.json` | 3 | TC_PF_003 (3 invalid token types) |
-| `booker-create-booking-data.json` | 1 | TC_RB_002 |
-| `booker-update-booking-data.json` | 1 | TC_RB_004 |
-| `booker-negative-booking-data.json` | 1 | TC_RB_005 |
-| `platzi-product-data.json` | 1 | TC_PF_004 |
-| `stub-demo-data.json` | — | TC_SD_001–004 (also drives stub response bodies) |
 
 **Single source of truth — `stub-demo-data.json`** powers both the WireMock stub response bodies and the test assertions simultaneously. Editing one JSON file updates the expected contract in both places:
 
@@ -836,35 +790,25 @@ mvn allure:report
 
 ---
 
-## Failure Demonstration Tests
+## Allure Report Screenshots
 
-Two tests — one in `BookerTests` and one in `PlatziTests` — are designed to fail against real APIs. They exist to show what a failing test looks like in the Allure report, with the actual response body and a diagnostic note attached as artifacts so the root cause is immediately visible.
+Regression suite — `mvn clean test -DsuiteXmlFile=testng-regression.xml && mvn allure:serve`
 
-| TC ID | Class | Type | What Fails | Allure Attachments |
-|-------|-------|------|-----------|-------------------|
-| TC_RB_007 | `BookerTests` | Schema validation failure | GET `/booking/{id}` response is missing required `booking_reference` field — schema validator catches the contract violation | Actual Response Body, Failure Note |
-| TC_PF_006 | `PlatziTests` | Business rule violation | POST `/products` with `price: -50`; test expects `422 Unprocessable Entity` but Platzi returns `400 Bad Request` — the semantically correct HTTP status for a business rule violation is 422, not 400 | Actual Response Body, Failure Note |
+### Overview
 
-Both tests run as part of the **regression** and **full** suites.
+![Allure Regression Overview](docs/screenshots/allure-regression-overview.png)
 
-### What you see in the Allure report
+### Test Suites
 
-**TC_RB_007 — Schema validation failure**
+![Allure Regression Suites](docs/screenshots/allure-regression-suites.png)
 
-`booking-strict-negative.json` requires a `booking_reference` field that the Booker API never returns. The JSON Schema validator raises:
-```
-1 validation error(s):
-required key [booking_reference] not found
-```
-The **Actual Response Body** attachment shows the raw booking JSON. The **Failure Note** names the missing field and which schema triggered the failure.
+### Test Detail — Passed
 
-**TC_PF_006 — Business rule violation**
+![Allure Regression Test Detail](docs/screenshots/allure-regression-test-detail.png)
 
-A product with `price: -50` is posted to Platzi. The test asserts `HTTP 422` because `422 Unprocessable Entity` is the semantically correct status for a business rule violation. Platzi does validate the input but returns `400 Bad Request` instead. TestNG reports:
-```
-expected [422] but found [400]
-```
-The **Actual Response Body** shows Platzi's rejection response. The **Failure Note** documents the HTTP semantics gap: *Platzi returns 400 (generic client error) instead of 422 (unprocessable content — the correct signal for a constraint violation)*.
+### Test Detail — Failed (Intentional)
+
+![Allure Regression Failure Detail](docs/screenshots/allure-regression-failure-detail.png)
 
 ---
 
