@@ -806,10 +806,6 @@ Regression suite — `mvn clean test -DsuiteXmlFile=testng-regression.xml && mvn
 
 ![Allure Regression Test Detail](docs/screenshots/allure-regression-test-detail.png)
 
-### Test Detail — Failed (Intentional)
-
-![Allure Regression Failure Detail](docs/screenshots/allure-regression-failure-detail.png)
-
 ---
 
 > Built with REST Assured, TestNG, WireMock, and Allure — demonstrating production-quality API test automation patterns.
