@@ -13,7 +13,7 @@ A professional-grade REST API test automation framework built with **REST Assure
 
 ## Table of Contents
 
-1. [Overview](#overview)
+1. [Overview](#-rest-assured-api-test-automation-framework)
 2. [Framework Architecture](#framework-architecture)
 3. [End-to-End Workflow](#end-to-end-workflow)
 4. [APIs Under Test](#apis-under-test)
@@ -37,18 +37,18 @@ A professional-grade REST API test automation framework built with **REST Assure
 
 ---
 
-## Overview
+## 🔗 REST Assured API Test Automation Framework
 
-This framework was built as a portfolio project to demonstrate a production-quality approach to REST API test automation.
+**Professional-grade REST API test automation framework using the BDD DSL pattern**
 
-- **Multi-API coverage** — tests run against three real-world APIs (GitHub, Restful-Booker, Platzi Fake Store) plus an embedded WireMock mock server, covering GET, POST, PUT, and DELETE across all targets
-- **Authentication strategies** — OAuth 2.0 Bearer Token, Cookie Session Token, and JWT Bearer with token refresh; each strategy includes negative tests confirming unauthorized access is rejected
-- **Data-driven testing** — all test data is externalized to JSON files under `testdata/`; no hardcoded values inside test methods; TestNG `@DataProvider` injects rows at runtime
-- **JSON Schema validation** — six Draft-07 schema files validate response structure, field types, enum constraints, and array rules independently of assertion-level checks
-- **WireMock embedded mock server** — demonstrates two stub approaches: file-based JSON mapping files loaded at startup, and programmatic stubs registered with fine-grained body and header matching; call verification confirms stubs were actually reached
-- **Stubbing techniques** — file-based stubs use `mappings/` + `__files/` for declarative response definitions; programmatic stubs use `stubFor()` with `withRequestBody(containing(...))` and `withHeader(matching(...))` for conditional matching; LIFO priority ensures programmatic stubs override file-based fallbacks
-- **Allure reporting** — full `@Epic` / `@Feature` / `@Story` / `@Step` hierarchy with AspectJ load-time weaving; response body and diagnostic note attachments on failing tests
-- **CI/CD ready** — credentials loaded from `config.properties` with transparent environment variable override (`GITHUB_TOKEN`, `BOOKER_USERNAME`, etc.); no code changes needed to run in any pipeline
+- 🔐 **Multi-authentication coverage** — OAuth 2.0 Bearer Token, Cookie Session Token, and JWT Bearer with token refresh; each strategy includes negative tests confirming unauthorized access is rejected
+- 📋 **JSON Schema validation** — six Draft-07 schema files enforce response contracts on structure, field types, enum values, and array constraints independently of assertion-level checks
+- 🗂️ **Data-driven testing** — all test inputs externalized to JSON files; TestNG `@DataProvider` injects rows at runtime with no hardcoded values inside test methods
+- 🌐 **WireMock embedded mock server** — file-based stubs loaded from `mappings/` at startup and programmatic stubs with body and header matching; call verification confirms stubs were actually reached
+- 🔌 **Stubbing techniques** — file-based stubs use `mappings/` + `__files/` for declarative definitions; programmatic stubs use `stubFor()` with `withRequestBody(containing(...))` and `withHeader(matching(...))`; LIFO priority ensures programmatic stubs override file-based fallbacks
+- 📊 **Allure reporting** — full `@Epic / @Feature / @Story / @Step` hierarchy with AspectJ load-time weaving; response body and diagnostic attachments captured on failing tests
+- ⚙️ **CI/CD ready** — credentials loaded from `config.properties` with transparent environment variable override; no code changes needed to run in any pipeline
+- 🛠️ **Stack** — Java 21, REST Assured 5.3.2, TestNG 7.9.0, WireMock 3.5.4, Allure 2.27.0, AspectJ, Lombok, Jackson, Maven
 
 ---
 
