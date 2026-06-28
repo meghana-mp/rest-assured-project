@@ -54,59 +54,59 @@ A professional-grade REST API test automation framework built with **REST Assure
 
 ## Framework Architecture
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                     REST ASSURED TEST FRAMEWORK                      │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │  REPORTING LAYER                                            │    │
-│  │  Allure 2.27.0 — @Epic / @Feature / @Story / @Step         │    │
-│  │  AspectJ 1.9.22.1 — load-time weaving for @Step on         │    │
-│  │  private methods via javaagent in surefire argLine          │    │
-│  └─────────────────────────────────────────────────────────────┘    │
-│                              ▲                                       │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │  TEST LAYER                                                 │    │
-│  │  GitHubTests  BookerTests  PlatziTests                      │    │
-│  │  WireMockTests  StubDemoTests                               │    │
-│  │  DataProviders  (7 providers, 7 external JSON files)        │    │
-│  └─────────────────────────────────────────────────────────────┘    │
-│                              ▲                                       │
-│  ┌───────────────────┐  ┌────────────────────────────────────────┐  │
-│  │  SPEC LAYER       │  │  MOCK LAYER                            │  │
-│  │  BookerSpecs      │  │  WireMock 3.5.4 (embedded)             │  │
-│  │  GitHubSpecs      │  │  File-based stubs (mappings/__files)   │  │
-│  │  PlatziSpecs      │  │  Programmatic stubs (body+header match)│  │
-│  │  (RequestSpec +   │  │  Call verification                     │  │
-│  │   ResponseSpec)   │  └────────────────────────────────────────┘  │
-│  └───────────────────┘                                              │
-│                              ▲                                       │
-│  ┌────────────────────┐  ┌──────────────────────────────────────┐   │
-│  │  MODELS LAYER      │  │  SCHEMA LAYER                        │   │
-│  │  15 POJOs          │  │  6 JSON Schemas (Draft-07)           │   │
-│  │  Lombok @Data      │  │  github-user, github-repo,           │   │
-│  │  @Builder          │  │  github-repos-array,                 │   │
-│  │  Jackson           │  │  booking, product                    │   │
-│  │  @JsonProperty     │  └──────────────────────────────────────┘   │
-│  └────────────────────┘                                             │
-│                              ▲                                       │
-│  ┌────────────────────┐  ┌──────────────────────────────────────┐   │
-│  │  CONSTANTS LAYER   │  │  UTILS LAYER                         │   │
-│  │  ApiConstants      │  │  TestUtils                           │   │
-│  │  Base URLs         │  │  uniqueName(), randomId()            │   │
-│  │  Endpoint paths    │  │  dateOffset(), logResult()           │   │
-│  │  Schema paths      │  └──────────────────────────────────────┘   │
-│  └────────────────────┘                                             │
-│                              ▲                                       │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │  CONFIG LAYER                                               │    │
-│  │  ConfigManager (Thread-safe Singleton)                      │    │
-│  │  config.properties ← Environment Variable Override          │    │
-│  │  github.token → GITHUB_TOKEN  booker.username → BOOKER_USERNAME │
-│  └─────────────────────────────────────────────────────────────┘    │
-│                                                                      │
-└──────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph RL [" REPORTING LAYER"]
+        R["Allure 2.27.0 — @Epic / @Feature / @Story / @Step\nAspectJ 1.9.22.1 — load-time weaving for @Step on private methods\nvia javaagent in surefire argLine"]
+    end
+
+    subgraph TL [" TEST LAYER"]
+        T["GitHubTests · BookerTests · PlatziTests · WireMockTests · StubDemoTests\nDataProviders — 7 providers · 7 external JSON files"]
+    end
+
+    subgraph SL [" SPEC LAYER"]
+        S["BookerSpecs · GitHubSpecs · PlatziSpecs\nRequestSpec + ResponseSpec"]
+    end
+
+    subgraph ML [" MOCK LAYER"]
+        M["WireMock 3.5.4 (embedded)\nFile-based stubs (mappings/__files)\nProgrammatic stubs (body + header match)\nCall verification"]
+    end
+
+    subgraph MO [" MODELS LAYER"]
+        MV["15 POJOs · Lombok @Data @Builder\nJackson @JsonProperty"]
+    end
+
+    subgraph SC [" SCHEMA LAYER"]
+        SV["6 JSON Schemas (Draft-07)\ngithub-user · github-repo · github-repos-array\nbooking · product"]
+    end
+
+    subgraph CL [" CONSTANTS LAYER"]
+        CV["ApiConstants\nBase URLs · Endpoint paths · Schema paths"]
+    end
+
+    subgraph UL [" UTILS LAYER"]
+        UV["TestUtils\nuniqueName() · randomId() · dateOffset() · logResult()"]
+    end
+
+    subgraph CF [" CONFIG LAYER"]
+        CFV["ConfigManager — Thread-safe Singleton\nconfig.properties ← Environment Variable Override\ngithub.token → GITHUB_TOKEN · booker.username → BOOKER_USERNAME"]
+    end
+
+    RL --> TL
+    TL --> SL & ML
+    SL & ML --> MO & SC
+    MO & SC --> CL & UL
+    CL & UL --> CF
+
+    style RL fill:#1a237e,stroke:#3949ab,color:#fff
+    style TL fill:#1b5e20,stroke:#43a047,color:#fff
+    style SL fill:#1a3e5c,stroke:#2e75b6,color:#fff
+    style ML fill:#4a1942,stroke:#9c27b0,color:#fff
+    style MO fill:#1a3e5c,stroke:#2e75b6,color:#fff
+    style SC fill:#4a1942,stroke:#9c27b0,color:#fff
+    style CL fill:#3e2723,stroke:#8d6e63,color:#fff
+    style UL fill:#3e2723,stroke:#8d6e63,color:#fff
+    style CF fill:#212121,stroke:#757575,color:#fff
 ```
 
 ---
